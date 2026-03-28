@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow – Smart Task Manager</title>
+  <meta name="description" content="TaskFlow is a modern task manager with smart reminders, priority tags, and beautiful UI to keep you productive." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated background orbs -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"></polyline>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+      </div>
+      <span class="brand-name">TaskFlow</span>
+    </div>
+    <div class="nav-actions">
+      <div class="notification-bell" id="notifBell" title="Notification Center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+      </div>
+      <button class="btn-add-task" id="openModalBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Task
+      </button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-label">Views</p>
+        <nav class="sidebar-nav">
+          <a href="#" class="nav-item active" data-filter="all" id="filterAll">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            All Tasks
+            <span class="nav-count" id="countAll">0</span>
+          </a>
+          <a href="#" class="nav-item" data-filter="today" id="filterToday">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Today
+            <span class="nav-count" id="countToday">0</span>
+          </a>
+          <a href="#" class="nav-item" data-filter="upcoming" id="filterUpcoming">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Upcoming
+            <span class="nav-count" id="countUpcoming">0</span>
+          </a>
+          <a href="#" class="nav-item" data-filter="completed" id="filterCompleted">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Completed
+            <span class="nav-count" id="countCompleted">0</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">Priority</p>
+        <nav class="sidebar-nav">
+          <a href="#" class="nav-item" data-filter="high" id="filterHigh">
+            <span class="priority-dot high"></span>High Priority
+            <span class="nav-count" id="countHigh">0</span>
+          </a>
+          <a href="#" class="nav-item" data-filter="medium" id="filterMedium">
+            <span class="priority-dot medium"></span>Medium Priority
+            <span class="nav-count" id="countMedium">0</span>
+          </a>
+          <a href="#" class="nav-item" data-filter="low" id="filterLow">
+            <span class="priority-dot low"></span>Low Priority
+            <span class="nav-count" id="countLow">0</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Progress Card -->
+      <div class="progress-card">
+        <p class="progress-label">Today's Progress</p>
+        <div class="progress-ring-wrap">
+          <svg class="progress-ring" width="80" height="80" viewBox="0 0 80 80">
+            <circle class="progress-ring-bg" cx="40" cy="40" r="32" stroke-width="8" fill="none"/>
+            <circle class="progress-ring-fill" id="progressRing" cx="40" cy="40" r="32" stroke-width="8" fill="none"
+              stroke-dasharray="201.06" stroke-dashoffset="201.06" stroke-linecap="round"/>
+          </svg>
+          <span class="progress-percent" id="progressPercent">0%</span>
+        </div>
+        <p class="progress-sub" id="progressSub">0 of 0 tasks done</p>
+      </div>
+    </aside>
+
+    <!-- Task Board -->
+    <section class="task-board">
+      <!-- Search & Sort Bar -->
+      <div class="board-header">
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search tasks…" />
+        </div>
+        <select id="sortSelect" class="sort-select">
+          <option value="created">Newest First</option>
+          <option value="due">Due Date</option>
+          <option value="priority">Priority</option>
+          <option value="alpha">Alphabetical</option>
+        </select>
+      </div>
+
+      <!-- Task List -->
+      <div class="task-list" id="taskList">
+        <!-- Tasks rendered here -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <h3>No tasks here yet</h3>
+        <p>Click <strong>Add Task</strong> to get started.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add/Edit Task Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="taskModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">New Task</h2>
+        <button class="modal-close" id="closeModalBtn" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="taskForm" class="modal-form" novalidate>
+        <input type="hidden" id="taskId" />
+
+        <div class="form-group">
+          <label for="taskTitle">Task Title <span class="required">*</span></label>
+          <input type="text" id="taskTitle" class="form-input" placeholder="e.g. Finish project report" required maxlength="120" />
+          <span class="form-error" id="titleError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="taskDesc">Description</label>
+          <textarea id="taskDesc" class="form-input form-textarea" placeholder="Add more details…" rows="3" maxlength="500"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskPriority">Priority</label>
+            <select id="taskPriority" class="form-input form-select">
+              <option value="low">🟢 Low</option>
+              <option value="medium" selected>🟡 Medium</option>
+              <option value="high">🔴 High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="taskDue">Due Date</label>
+            <input type="date" id="taskDue" class="form-input" />
+          </div>
+        </div>
+
+        <!-- Reminder Section -->
+        <div class="reminder-section">
+          <div class="reminder-toggle-row">
+            <div>
+              <p class="reminder-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                Set Reminder
+              </p>
+              <p class="reminder-sub">Get a browser notification at the set time</p>
+            </div>
+            <label class="toggle-switch" for="reminderToggle">
+              <input type="checkbox" id="reminderToggle" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+
+          <div class="reminder-fields" id="reminderFields" style="display:none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="reminderDate">Reminder Date <span class="required">*</span></label>
+                <input type="date" id="reminderDate" class="form-input" />
+                <span class="form-error" id="reminderDateError"></span>
+              </div>
+              <div class="form-group">
+                <label for="reminderTime">Reminder Time <span class="required">*</span></label>
+                <input type="time" id="reminderTime" class="form-input" />
+                <span class="form-error" id="reminderTimeError"></span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="reminderNote">Reminder Note (optional)</label>
+              <input type="text" id="reminderNote" class="form-input" placeholder="e.g. Don't forget to review slides!" maxlength="100" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn-save" id="saveBtn">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Reminder Notification Popup -->
+  <div class="reminder-popup" id="reminderPopup" style="display:none;">
+    <div class="reminder-popup-inner">
+      <div class="reminder-popup-icon">🔔</div>
+      <div class="reminder-popup-text">
+        <p class="reminder-popup-title" id="reminderPopupTitle">Reminder!</p>
+        <p class="reminder-popup-msg" id="reminderPopupMsg"></p>
+      </div>
+      <button class="reminder-popup-close" id="reminderPopupClose">✕</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
